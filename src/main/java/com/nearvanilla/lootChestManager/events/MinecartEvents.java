@@ -12,6 +12,7 @@ import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.inventory.Inventory;
 
 public class MinecartEvents implements Listener {
 
@@ -21,15 +22,25 @@ public class MinecartEvents implements Listener {
     );
 
     @EventHandler
-    public void onMinecartMove(VehicleDestroyEvent event){
+    public void onMinecartDestroy(VehicleDestroyEvent event){
         Entity attacker = event.getAttacker();
         Vehicle vehicle = event.getVehicle();
-        if(vehicle instanceof StorageMinecart){
-            event.setCancelled(true);
-            if(attacker instanceof Player player){
-                player.sendMessage(minecartMessage);
+        if(vehicle instanceof StorageMinecart storageMinecart){
+            if(storageMinecart instanceof LootableInventory lootableInventory){
+                if(lootableInventory.hasLootTable()){
+                    event.setCancelled(true);
+                    if(attacker instanceof Player player){
+                        player.sendMessage(minecartMessage);
+                    }
+                    return;
+                }
+            }
+            if(storageMinecart.getPersistentDataContainer().has(LootChestManager.lootTableKey)){
+                event.setCancelled(true);
+                if(attacker instanceof Player player){
+                    player.sendMessage(minecartMessage);
+                }
             }
         }
     }
-
 }
