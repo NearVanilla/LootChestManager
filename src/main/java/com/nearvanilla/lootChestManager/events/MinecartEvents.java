@@ -28,17 +28,21 @@ public class MinecartEvents implements Listener {
         if(vehicle instanceof StorageMinecart storageMinecart){
             if(storageMinecart instanceof LootableInventory lootableInventory){
                 if(lootableInventory.hasLootTable()){
-                    event.setCancelled(true);
                     if(attacker instanceof Player player){
-                        player.sendMessage(minecartMessage);
+                        if(!player.isSneaking()){
+                            player.sendMessage(minecartMessage);
+                            event.setCancelled(true);
+                        }
                     }
                     return;
                 }
             }
             if(storageMinecart.getPersistentDataContainer().has(LootChestManager.lootTableKey)){
-                event.setCancelled(true);
                 if(attacker instanceof Player player){
-                    player.sendMessage(minecartMessage);
+                    if(!player.isSneaking()){
+                        player.sendMessage(minecartMessage);
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

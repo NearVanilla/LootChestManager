@@ -35,14 +35,18 @@ public class ChestEvents implements Listener {
         BlockState blockState = block.getState();
         if(blockState instanceof Container container){
             if(container.getPersistentDataContainer().has(LootChestManager.lootTableKey)){
-                event.setCancelled(true);
-                player.sendMessage(blockBreakComponent);
-                return;
-            }
-            if(container instanceof LootableInventory lootableInventory){
-                if(lootableInventory.hasLootTable()){
+                if(!player.isSneaking()){
                     event.setCancelled(true);
                     player.sendMessage(blockBreakComponent);
+                    return;
+                }
+            }
+            if(container instanceof LootableInventory lootableInventory){
+                if(!player.isSneaking()){
+                    if(lootableInventory.hasLootTable()){
+                        event.setCancelled(true);
+                        player.sendMessage(blockBreakComponent);
+                    }
                 }
             }
         }
