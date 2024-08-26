@@ -16,11 +16,6 @@ import org.bukkit.inventory.Inventory;
 
 public class MinecartEvents implements Listener {
 
-    TextComponent minecartMessage = Component.text(
-            "You cannot destroy a lootable minecart!",
-            NamedTextColor.RED
-    );
-
     @EventHandler
     public void onMinecartDestroy(VehicleDestroyEvent event){
         Entity attacker = event.getAttacker();
@@ -30,7 +25,7 @@ public class MinecartEvents implements Listener {
                 if(lootableInventory.hasLootTable()){
                     if(attacker instanceof Player player){
                         if(!player.isSneaking()){
-                            player.sendMessage(minecartMessage);
+                            player.sendMessage(LootChestManager.breakMessage);
                             event.setCancelled(true);
                         }
                     }
@@ -40,7 +35,7 @@ public class MinecartEvents implements Listener {
             if(storageMinecart.getPersistentDataContainer().has(LootChestManager.lootTableKey)){
                 if(attacker instanceof Player player){
                     if(!player.isSneaking()){
-                        player.sendMessage(minecartMessage);
+                        player.sendMessage(LootChestManager.breakMessage);
                         event.setCancelled(true);
                     }
                 }

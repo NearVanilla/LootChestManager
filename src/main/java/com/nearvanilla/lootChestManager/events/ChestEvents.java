@@ -2,9 +2,6 @@ package com.nearvanilla.lootChestManager.events;
 
 import com.destroystokyo.paper.loottable.LootableInventory;
 import com.nearvanilla.lootChestManager.LootChestManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -23,11 +20,6 @@ import java.util.List;
 
 public class ChestEvents implements Listener {
 
-    TextComponent blockBreakComponent = Component.text(
-            "You cannot break loot chests!",
-            NamedTextColor.RED
-    );
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
@@ -37,7 +29,7 @@ public class ChestEvents implements Listener {
             if(container.getPersistentDataContainer().has(LootChestManager.lootTableKey)){
                 if(!player.isSneaking()){
                     event.setCancelled(true);
-                    player.sendMessage(blockBreakComponent);
+                    player.sendMessage(LootChestManager.breakMessage);
                     return;
                 }
             }
@@ -45,7 +37,7 @@ public class ChestEvents implements Listener {
                 if(!player.isSneaking()){
                     if(lootableInventory.hasLootTable()){
                         event.setCancelled(true);
-                        player.sendMessage(blockBreakComponent);
+                        player.sendMessage(LootChestManager.breakMessage);
                     }
                 }
             }
@@ -71,18 +63,15 @@ public class ChestEvents implements Listener {
 
     @EventHandler
     public void onLootGenerate(LootGenerateEvent event){
-        LootChestManager.pluginLogger.info("Loot generated.");
         LootTable lootTable = event.getLootTable();
         String originalLootTable = lootTable.getKey().asString();
         InventoryHolder invHolder = event.getInventoryHolder();
         if(invHolder instanceof Container container){
-            LootChestManager.pluginLogger.info("Loot recently generated, setting PDC.");
             container.getPersistentDataContainer().set(LootChestManager.lootTableKey, PersistentDataType.STRING, originalLootTable);
             container.update();
         }
 
         if(invHolder instanceof StorageMinecart storageMinecart){
-            LootChestManager.pluginLogger.info("Loot recently generated, setting PDC.");
             storageMinecart.getPersistentDataContainer().set(LootChestManager.lootTableKey, PersistentDataType.STRING, originalLootTable);
         }
     }
